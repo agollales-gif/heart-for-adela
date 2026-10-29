@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #0a0a0a;
+  color: #f1f5f9;
+  overflow-x: hidden;
+}
+
+/* Custom mathematical glow utilities */
+.glow-cyan {
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 25px rgba(0, 243, 255, 0.4), 0 0 50px rgba(0, 243, 255, 0.2);
+}
+
+.glow-box-cyan {
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.25), inset 0 0 15px rgba(0, 243, 255, 0.05);
+}
+
+.glow-purple {
+  text-shadow: 0 0 12px rgba(168, 85, 247, 0.7), 0 0 30px rgba(168, 85, 247, 0.4);
+}
+
+.glow-gold {
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.7), 0 0 30px rgba(251, 191, 36, 0.4);
+}
+
+/* Terminal scanline and grid background */
+.terminal-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+.terminal-scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.02),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.02)
+  );
+  background-size: 100% 3px, 6px 100%;
+}
+
+/* KaTeX custom sizing and overrides for ultra-crisp dark mode */
+.katex-display {
+  margin: 0 !important;
+  padding: 0.5rem 0;
+}
+
+.katex {
+  font-size: 1.15em;
+  color: #f8fafc;
+}
+
+/* Smooth morph transitions */
+.math-morph-enter {
+  opacity: 0;
+  transform: scale(0.95) translateY(8px);
+}
+
+.math-morph-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
