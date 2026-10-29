@@ -11,11 +11,12 @@ interface Particle {
   baseAlpha: number;
   rotation: number;
   vRot: number;
+  color: string;
 }
 
 const MATH_SYMBOLS = [
   '∫', 'dx', '∂/∂x', 'π', '∑', '∞', '∇', 'lim', 'λ', 'e', 
-  'θ', 'f(x)', 'ℝ', 'x²', 'dy/dx', '±', '∈', '∀', '∃', 'Q.E.D.'
+  'θ', 'f(x)', 'ℝ', 'x²', 'dy/dx', '±', '∈', '∀', '∃', '❤'
 ];
 
 export const BackgroundCanvas: React.FC = () => {
@@ -55,19 +56,19 @@ export const BackgroundCanvas: React.FC = () => {
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseleave', handleMouseLeave);
 
-    // Generate mathematical floating particles
-    const particleCount = Math.min(Math.floor((width * height) / 22000), 50);
+    const particleCount = Math.min(Math.floor((width * height) / 22000), 45);
     const particles: Particle[] = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
       size: Math.random() * 8 + 12,
       char: MATH_SYMBOLS[Math.floor(Math.random() * MATH_SYMBOLS.length)],
-      alpha: Math.random() * 0.2 + 0.05,
-      baseAlpha: Math.random() * 0.2 + 0.05,
+      alpha: Math.random() * 0.15 + 0.04,
+      baseAlpha: Math.random() * 0.15 + 0.04,
       rotation: (Math.random() - 0.5) * 0.3,
       vRot: (Math.random() - 0.5) * 0.005,
+      color: Math.random() > 0.4 ? '255, 117, 140' : '255, 255, 255',
     }));
 
     let time = 0;
@@ -76,9 +77,9 @@ export const BackgroundCanvas: React.FC = () => {
       time += 0.015;
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Draw subtle terminal coordinate grid
+      // 1. Subtle soft grid
       const gridSize = 48;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.022)';
+      ctx.strokeStyle = 'rgba(255, 182, 193, 0.025)';
       ctx.lineWidth = 1;
 
       ctx.beginPath();
@@ -92,55 +93,40 @@ export const BackgroundCanvas: React.FC = () => {
       }
       ctx.stroke();
 
-      // 2. Draw subtle glowing calculus sine wave ribbon
+      // 2. Subtle soft pink wave
       ctx.save();
       ctx.beginPath();
       const waveY = height * 0.55;
       for (let x = 0; x < width; x += 6) {
-        const distFromMouse = Math.hypot(x - mouseRef.current.x, waveY - mouseRef.current.y);
-        const mouseEffect = distFromMouse < 200 ? (1 - distFromMouse / 200) * 30 : 0;
-        const y = waveY + Math.sin(x * 0.006 + time) * 35 + Math.cos(x * 0.012 - time * 0.7) * 15 - mouseEffect;
+        const y = waveY + Math.sin(x * 0.006 + time) * 30 + Math.cos(x * 0.012 - time * 0.7) * 12;
         if (x === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = 'rgba(0, 243, 255, 0.04)';
+      ctx.strokeStyle = 'rgba(255, 105, 180, 0.035)';
       ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Secondary harmonic wave
-      ctx.beginPath();
-      for (let x = 0; x < width; x += 8) {
-        const y = waveY + Math.sin(x * 0.004 - time * 0.8) * 45 + Math.sin(x * 0.01 + time * 0.5) * 20;
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = 'rgba(168, 85, 247, 0.035)';
-      ctx.lineWidth = 1.5;
       ctx.stroke();
       ctx.restore();
 
-      // 3. Draw & update mathematical particles
+      // 3. Floating symbols
       particles.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
         p.rotation += p.vRot;
 
-        // Wrap around boundaries
         if (p.x < -30) p.x = width + 30;
         if (p.x > width + 30) p.x = -30;
         if (p.y < -30) p.y = height + 30;
         if (p.y > height + 30) p.y = -30;
 
-        // Interactive mouse repulsion/reaction
         let currentAlpha = p.baseAlpha;
         if (mouseRef.current.active) {
           const dx = p.x - mouseRef.current.x;
           const dy = p.y - mouseRef.current.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 140) {
-            currentAlpha = Math.min(0.5, p.baseAlpha + (1 - dist / 140) * 0.35);
-            p.x += (dx / dist) * 0.8;
-            p.y += (dy / dist) * 0.8;
+            currentAlpha = Math.min(0.4, p.baseAlpha + (1 - dist / 140) * 0.3);
+            p.x += (dx / dist) * 0.7;
+            p.y += (dy / dist) * 0.7;
           }
         }
 
@@ -148,7 +134,7 @@ export const BackgroundCanvas: React.FC = () => {
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rotation);
         ctx.font = `${p.size}px "Fira Code", monospace`;
-        ctx.fillStyle = `rgba(0, 243, 255, ${currentAlpha})`;
+        ctx.fillStyle = `rgba(${p.color}, ${currentAlpha})`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(p.char, 0, 0);
