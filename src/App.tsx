@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import confetti from 'canvas-confetti';
-import { Heart, Sparkles, Copy, Check } from 'lucide-react';
+import { Heart, Sparkles } from 'lucide-react';
 import { BackgroundCanvas } from './components/BackgroundCanvas';
 import { MathView } from './components/MathView';
 import { playRevealChord } from './utils/audio';
@@ -11,7 +11,6 @@ const TOTAL_CYCLE_MS = DRAW_DURATION_MS + PAUSE_DURATION_MS;
 
 export const App: React.FC = () => {
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
-  const [copied, setCopied] = useState<boolean>(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number | null>(null);
@@ -183,13 +182,6 @@ export const App: React.FC = () => {
     };
   }, [festoMeZemer]);
 
-  // Copy dedication text
-  const kopjoMesazhin = () => {
-    const text = "E dashur mësuese Adela, Thank you for being our teacher—you're simply the best! Thank you for your endless patience, your smile, and your dedication. You're amazing!";
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2200);
-  };
 
   return (
     <div className="relative min-h-screen bg-[#080709] text-slate-100 flex flex-col justify-between selection:bg-pink-500 selection:text-white">
@@ -262,14 +254,6 @@ export const App: React.FC = () => {
               >
                 <Heart className="w-3.5 h-3.5 fill-current text-pink-400" />
                 <span>Festo</span>
-              </button>
-
-              <button
-                onClick={kopjoMesazhin}
-                className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-mono flex items-center gap-1.5 transition-colors"
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copied ? 'U kopjua!' : 'Kopjo'}</span>
               </button>
             </div>
           </div>
